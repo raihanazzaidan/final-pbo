@@ -1,7 +1,3 @@
-```
-
----
-
 ## 🏗️ Implementasi OOP (Object-Oriented Programming)
 Proyek ini dibangun dengan menerapkan prinsip dasar pemrograman berorientasi objek untuk menjaga kode tetap modular dan *scalable*:
 
@@ -53,31 +49,7 @@ Sebutkan poin-poin unggulan dari program kamu:
 ---
 
 ## ⚙️ Cara Menjalankan Proyek
-Ikuti langkah-langkah berikut untuk menjalankan proyek di lingkungan lokal kamu:
+Langkah-langkah untuk menjalankan project di local:
 
-1.  **Clone Repository**
-    ```bash
-    git clone [https://github.com/username/nama-repo.git](https://github.com/username/nama-repo.git)
-    cd nama-repo
-    ```
 
-2.  **Instalasi Dependensi**
-    *(Sesuaikan dengan bahasa pemrograman yang digunakan)*
-    ```bash
-    # Contoh untuk Go
-    go mod tidy
-
-    # Contoh untuk Python
-    pip install -r requirements.txt
-    ```
-
-3.  **Konfigurasi Environment**
-    Buat file `.env` dan sesuaikan konfigurasinya (Database, API Key, dll).
-
-4.  **Jalankan Program**
-    ```bash
-    go run main.go
-    # atau
-    python main.py
-    ```
 
