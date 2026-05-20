@@ -1,14 +1,92 @@
 from urllib import request
 
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from ..models import Paket, TrackingHistory, TipeLayanan, Gudang, User
 
-@login_required(login_url='login') # Jika belum login, lempar ke halaman login
+@login_required(login_url='login')
+def getAllUser(request):
+    if request.user.role != 'ADMIN':
+        messages.error(request, "Akses ditolak! Khusus Admin.")
+        return redirect('index')
+    
+    users = User.objects.all().order_by('-date_joined')
+    return render(request, 'tracking/master/user_list.html', {'users': users})
+
+@login_required(login_url='login')
+def addUser(request):
+    if request.user.role != 'ADMIN':
+        return redirect('index')
+        
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        role = request.POST.get('role')
+        no_hp = request.POST.get('noHp')
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, f"Gagal! Username '{username}' sudah digunakan.")
+            return redirect('add_user')
+            
+        User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            role=role,
+            noHp=no_hp
+        )
+        messages.success(request, f"User {username} berhasil ditambahkan!")
+        return redirect('get_all_user')
+        
+    return render(request, 'tracking/master/addUser.html', {'action': 'add'})
+
+@login_required(login_url='login')
+def editUser(request, user_id):
+    if request.user.role != 'ADMIN':
+        return redirect('index')
+        
+    target_user = get_object_or_404(User, id=user_id)
+    
+    if request.method == 'POST':
+        target_user.username = request.POST.get('username')
+        target_user.email = request.POST.get('email')
+        target_user.role = request.POST.get('role')
+        target_user.noHp = request.POST.get('noHp')
+        
+        new_password = request.POST.get('password')
+        if new_password:
+            target_user.set_password(new_password)
+            
+        target_user.save()
+        messages.success(request, f"Data user {target_user.username} berhasil diperbarui!")
+        return redirect('get_all_user')
+        
+    return render(request, 'tracking/master/addUser.html', {
+        'action': 'edit', 
+        'target_user': target_user
+    })
+
+@login_required(login_url='login')
+def deleteUser(request, user_id):
+    if request.user.role != 'ADMIN':
+        return redirect('index')
+        
+    target_user = get_object_or_404(User, id=user_id)
+    
+    if target_user == request.user:
+        messages.error(request, "Anda tidak bisa menghapus akun Anda sendiri!")
+    else:
+        target_user.delete()
+        messages.success(request, "User berhasil dihapus dari sistem.")
+        
+    return redirect('get_all_user')
+
 def index(request):
     return render(request, 'tracking/master/index.html')
 
+@login_required(login_url='login')
 def addTipeLayanan(request):
     """Controller untuk menambah Tipe Layanan Baru (Khusus ADMIN)"""
     
@@ -40,5 +118,4 @@ def addTipeLayanan(request):
             messages.error(request, "Pastikan format Harga dan Estimasi Hari berupa angka yang valid!")
             return render(request, 'tracking/master/layanan_form.html', {'form_data': request.POST})
 
-    # 3. Tangani GET: Tampilkan Form HTML kosong
     return render(request, 'tracking/master/addLayanan.html')

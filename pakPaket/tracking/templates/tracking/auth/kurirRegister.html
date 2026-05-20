@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PakPaket | Daftar Kurir</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen py-12">
+
+<div class="flex items-center justify-center px-4">
+    <div class="w-full max-w-2xl">
+        
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-emerald-600">📦 pakPaket</h1>
+            <p class="text-gray-500 mt-2">Buat akun kurir baru</p>
+        </div>
+
+        <form method="POST" action="{% url 'kurir_register' %}" class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-6">
+            {% csrf_token %}
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'error' %}bg-red-50 text-red-600 border-red-200{% else %}bg-emerald-50 text-emerald-600 border-emerald-200{% endif %} border text-sm p-3 rounded-lg flex justify-between items-center">
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="border-b border-gray-100 pb-4">
+                <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Informasi Akun</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input type="text" name="username" value="{{ form_data.username|default:'' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input type="email" name="email" value="{{ form_data.email|default:'' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" required />
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" name="password" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" required />
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Profil Kurir</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                        <input type="text" name="nama" value="{{ form_data.nama|default:'' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" required />
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Nomor HP</label>
+                        <input type="text" name="noHp" value="{{ form_data.noHp|default:'' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" required />
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-lg font-medium hover:bg-emerald-700 transition shadow-md cursor-pointer">
+                Daftar Akun
+            </button>
+
+            <p class="text-center text-sm text-gray-500">
+                Sudah punya akun? 
+                <a href="{% url 'login' %}" class="text-emerald-600 hover:underline font-medium">
+                    Masuk di sini
+                </a>
+            </p>
+        </form>
+        
+    </div>
+</div>
+
+</body>
+</html>

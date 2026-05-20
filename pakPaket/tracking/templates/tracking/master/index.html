@@ -1,13 +1,35 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PakPaket | Home</title>
+    <title>PakPaket - Kirim Paket Jadi Lebih Praktis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h2>INDEX</h2><br>
-    <h3>Selamat Datang, {{ user.username }}!</h3>
-    <button><a href="{% url 'logout' %}">Logout</a></button>
+<body class="bg-gray-50 min-h-screen">
+
+    {% include 'tracking/component/navbar.html' %}
+
+    <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
+        
+        <div class="relative w-full rounded-2xl md:rounded-[2rem] overflow-hidden shadow-xl border border-gray-100 bg-white">
+            
+            <img 
+                src="{% static 'images/index.png' %}" 
+                alt="Promo PakPaket" 
+                class="w-full h-auto object-cover"
+            >
+            
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 md:mt-10">
+            <a href="{% url 'cek_resi_publik' %}" class="w-full sm:w-auto text-center bg-white border-2 border-emerald-600 text-emerald-600 px-8 py-3.5 rounded-xl font-bold hover:bg-emerald-50 transition">
+                🔍 Lacak Resi Sekarang
+            </a>
+        </div>
+
+    </div>
+
 </body>
 </html>

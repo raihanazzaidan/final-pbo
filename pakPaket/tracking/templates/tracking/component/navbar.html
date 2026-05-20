@@ -1,0 +1,85 @@
+<nav class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="flex justify-between h-16">
+            
+            <div class="flex items-center gap-8">
+                <a href="{% url 'index' %}" class="flex items-center gap-2">
+                    <span class="text-2xl">📦</span>
+                    <span class="font-bold text-xl text-emerald-600 tracking-tight">pakPaket</span>
+                </a>
+
+                <div class="hidden md:flex items-center space-x-1">
+                    <a href="{% url 'cek_resi_publik' %}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Cek Resi</a>
+                    
+                    {% if request.user.is_authenticated %}
+                        {% if request.user.role == 'CUSTOMER' %}
+                            <a href="{% url 'all_paket' %}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Paket Saya</a>
+                            <a href="{% url 'kirim_paket' %}" class="px-3 py-2 text-sm font-medium text-emerald-600 bg-emerald-50 rounded-md hover:bg-emerald-100 transition">Kirim Paket</a>
+                        {% elif request.user.role == 'KURIR' %}
+                            <a href="{% url 'all_paket' %}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Tugas Antaran</a>
+                        {% elif request.user.role == 'ADMIN' %}
+                            <a href="{% url 'all_paket' %}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Semua Paket</a>
+                            <a href="{% url 'get_all_user' %}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Kelola User</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-4">
+                {% if request.user.is_authenticated %}
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm text-gray-500">
+                            Halo, <strong class="text-gray-800">{{ request.user.username }}</strong>
+                            <span class="text-[10px] bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full ml-1 font-bold">{{ request.user.role }}</span>
+                        </span>
+                        <a href="{% url 'logout' %}" onclick="return confirm('Yakin ingin keluar dari sistem?');" class="text-sm font-medium text-red-500 hover:text-red-700 transition bg-red-50 px-3 py-1.5 rounded-md">Logout</a>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Login</a>
+                    <a href="{% url 'register' %}" class="text-sm font-medium bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition shadow-sm">Daftar</a>
+                {% endif %}
+            </div>
+
+            <div class="flex items-center md:hidden">
+                <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="text-gray-500 hover:text-gray-700 focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+        <div class="px-4 pt-2 pb-4 space-y-1 shadow-lg rounded-b-xl">
+            <a href="{% url 'cek_resi_publik' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-emerald-600">Cek Resi</a>
+            
+            {% if request.user.is_authenticated %}
+                <div class="border-t border-gray-100 pt-2 mt-2">
+                    <p class="px-3 text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Menu {{ request.user.role }}</p>
+                    
+                    {% if request.user.role == 'CUSTOMER' %}
+                        <a href="{% url 'all_paket' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Paket Saya</a>
+                        <a href="{% url 'kirim_paket' %}" class="block px-3 py-2 rounded-md text-base font-medium text-emerald-600 bg-emerald-50 mt-1">Kirim Paket</a>
+                    {% elif request.user.role == 'KURIR' %}
+                        <a href="{% url 'all_paket' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Tugas Antaran</a>
+                    {% elif request.user.role == 'ADMIN' %}
+                        <a href="{% url 'all_paket' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Semua Paket</a>
+                        <a href="{% url 'get_all_user' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Kelola User</a>
+                    {% endif %}
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between px-3">
+                        <span class="text-sm font-medium text-gray-800">{{ request.user.username }}</span>
+                        <a href="{% url 'logout' %}" class="text-sm font-medium text-red-500 bg-red-50 px-3 py-1 rounded-md">Logout</a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="mt-4 pt-4 border-t border-gray-100 flex gap-2 px-3">
+                    <a href="{% url 'login' %}" class="flex-1 text-center bg-gray-50 border border-gray-200 text-gray-700 px-4 py-2 rounded-lg font-medium">Login</a>
+                    <a href="{% url 'register' %}" class="flex-1 text-center bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium shadow-sm">Daftar</a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>
