@@ -73,14 +73,25 @@ WSGI_APPLICATION = 'pakPaket.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'pakPaket',
+#         'USER': 'rey',
+#         'PASSWORD': '134679',
+#         'HOST': '127.0.0.1',
+#         'PORT': '3306',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'pakPaket',
-        'USER': 'rey',
-        'PASSWORD': '134679',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': 'defaultdb',
+        'USER': 'avnadmin',
+        'PASSWORD': 'AVNS_KySa_MHSaTKA8t5FxXy',
+        'HOST': 'pakpaket-db-raihanazzaidan.h.aivencloud.com',
+        'PORT': '26949',
     }
 }
 
