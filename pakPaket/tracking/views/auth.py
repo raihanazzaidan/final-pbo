@@ -18,7 +18,7 @@ def loginView(request):
             login(request, user)
             
             if user.role == 'ADMIN':
-                return redirect('index')
+                return redirect('admin_dasbor')
             elif user.role == 'KURIR':
                 return redirect('index')
             elif user.role == 'CUSTOMER':
@@ -67,7 +67,7 @@ def customerRegister(request):
         except Exception as e:
             messages.error(request, f'Terjadi kesalahan saat registrasi: {str(e)}')
             return render(request, 'tracking/auth/register.html', {'form_data': request.POST})
-    return render(request, 'tracking/auth/register.html')
+    return render(request, 'tracking/auth/login.html')
 
 @login_required(login_url='login')
 def logoutView(request):

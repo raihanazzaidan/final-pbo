@@ -25,6 +25,7 @@ urlpatterns = [
 
     # URL Master 
     path('layanan/add/', master.addTipeLayanan, name='tambah_layanan'),
+    path('adm/', master.dasborAdmin, name='admin_dasbor'),
 
     # URL Kurir
     path('paket/kurir/antar/<uuid:paket_id>/', paket.antar_paket, name='antar_paket'),

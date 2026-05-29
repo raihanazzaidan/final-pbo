@@ -76,7 +76,7 @@ def kirim_paket(request):
 
         messages.success(request, f"Berhasil! Paket Anda telah terdaftar dengan resi: {paket_baru.resi}")
         
-        return redirect(f"/paket/cek-resi/?id={paket_baru.id}")
+        return redirect(f"/paket/all/?id={request.user.id}")
 
     daftar_layanan = TipeLayanan.objects.all()
     return render(request, 'tracking/paket/kirim_paket.html', {
@@ -85,10 +85,8 @@ def kirim_paket(request):
 
 def getAllPaket(request):
     if request.user.role == 'KURIR':
-        # Perbaikan: Cek profil menggunakan 'kurir_profile'
         if hasattr(request.user, 'kurir_profile'):
             profil_kurir = request.user.kurir_profile
-            # Perbaikan Logika: Kurir HANYA melihat paket DIKEMAS atau paket DIKIRIM yang dibawa oleh dirinya sendiri
             paket_list = Paket.objects.filter(
                 Q(status='DIKEMAS') | Q(status='DIKIRIM', kurir=profil_kurir)
             ).order_by('created_at')
@@ -96,7 +94,6 @@ def getAllPaket(request):
             paket_list = Paket.objects.none()
             
     elif request.user.role == 'CUSTOMER':
-        # Ini sudah benar menggunakan 'customer_profile'
         if hasattr(request.user, 'customer_profile'):
             paket_list = Paket.objects.filter(pengirim=request.user.customer_profile).order_by('-created_at')
         else:
@@ -144,18 +141,15 @@ def antar_paket(request, paket_id):
 def terima_paket(request, paket_id):
     """Fungsi agar Kurir mengonfirmasi paket telah sampai ke pelanggan"""
     
-    # PERBAIKAN: Gunakan 'kurir_profile'
     if request.user.role != 'KURIR' or not hasattr(request.user, 'kurir_profile'):
         messages.error(request, "Akses ditolak!")
         return redirect('all_paket')
 
     paket = get_object_or_404(Paket, id=paket_id)
     
-    # Update Status menjadi Diterima
     paket.status = 'DITERIMA'
     paket.save()
 
-    # Catat ke History (Lokasi menggunakan kota penerima)
     TrackingHistory.objects.create(
         paket=paket,
         status='DITERIMA',

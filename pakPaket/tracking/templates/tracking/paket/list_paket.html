@@ -102,7 +102,7 @@
                             </a>
                         {% elif paket.status == 'DIKIRIM' %}
                             <a href="{% url 'terima_paket' paket.id %}" onclick="return confirm('Konfirmasi paket telah diterima pelanggan?');" class="text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition px-3 py-1.5 rounded-md shadow-sm">
-                                Selesaikan (Diterima)
+                                Selesaikan
                             </a>
                         {% endif %}
                         

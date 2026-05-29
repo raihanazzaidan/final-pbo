@@ -119,3 +119,25 @@ def addTipeLayanan(request):
             return render(request, 'tracking/master/layanan_form.html', {'form_data': request.POST})
 
     return render(request, 'tracking/master/addLayanan.html')
+
+@login_required(login_url='login')
+def dasborAdmin(request):
+    if request.user.role != 'ADMIN':
+        messages.error(request, "Akses ditolak! Hanya admin yang dapat mengakses dasbor ini.")
+        return redirect('index')
+    
+    total_paket = Paket.objects.count()
+    paket_dikemas = Paket.objects.filter(status='DIKEMAS').count()
+    paket_dikirim = Paket.objects.filter(status='DIKIRIM').count()
+    paket_diterima = Paket.objects.filter(status='DITERIMA').count()
+
+    paket_terbaru = Paket.objects.all().order_by('-id')[:5]
+
+
+    return render(request, 'tracking/master/adminDasbor.html', {
+        'total_paket': total_paket,
+        'paket_dikemas': paket_dikemas,
+        'paket_dikirim': paket_dikirim,
+        'paket_diterima': paket_diterima,
+        'paket_terbaru': paket_terbaru
+    })
