@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-*&l@43)yv0prk^f9j-(r=as&$bht65j$@0mgpziqa7*k42qkf*
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = ['https://raihanazzaidan.pythonanywhere.com']
 
 # Application definition
 
@@ -83,17 +83,6 @@ DATABASES = {
         'PORT': '3306',
     }
 }
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'defaultdb',
-#         'USER': 'avnadmin',
-#         'PASSWORD': 'AVNS_KySa_MHSaTKA8t5FxXy',
-#         'HOST': 'pakpaket-db-raihanazzaidan.h.aivencloud.com',
-#         'PORT': '26949',
-#     }
-# }
 
 # DATABASES = {
 #     'default': {
