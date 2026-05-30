@@ -3,6 +3,8 @@ from urllib import request
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import timedelta
 from ..models import Paket, TrackingHistory, TipeLayanan, Gudang, User
 
 @login_required(login_url='login')
@@ -11,8 +13,23 @@ def getAllUser(request):
         messages.error(request, "Akses ditolak! Khusus Admin.")
         return redirect('index')
     
-    users = User.objects.all().order_by('-date_joined')
-    return render(request, 'tracking/master/user_list.html', {'users': users})
+    role_filter = request.GET.get('role', 'all')
+    
+    if role_filter == 'KURIR':
+        users = User.objects.filter(role='KURIR').order_by('-date_joined')
+    elif role_filter == 'CUSTOMER':
+        users = User.objects.filter(role='CUSTOMER').order_by('-date_joined')
+    else:
+        users = User.objects.exclude(role='ADMIN') \
+                            .exclude(is_superuser=True) \
+                            .exclude(username='superadmin') \
+                            .order_by('-date_joined')
+
+    context = {
+        'users': users,
+        'current_filter': role_filter,
+    }
+    return render(request, 'tracking/master/user_list.html', context)
 
 @login_required(login_url='login')
 def addUser(request):
@@ -121,23 +138,60 @@ def addTipeLayanan(request):
     return render(request, 'tracking/master/addLayanan.html')
 
 @login_required(login_url='login')
-def dasborAdmin(request):
-    if request.user.role != 'ADMIN':
-        messages.error(request, "Akses ditolak! Hanya admin yang dapat mengakses dasbor ini.")
-        return redirect('index')
-    
-    total_paket = Paket.objects.count()
-    paket_dikemas = Paket.objects.filter(status='DIKEMAS').count()
-    paket_dikirim = Paket.objects.filter(status='DIKIRIM').count()
+def adminDashboard(request):
+    paket_dikirim = Paket.objects.count()
     paket_diterima = Paket.objects.filter(status='DITERIMA').count()
+    paket_dikembalikan = Paket.objects.filter(status='DIKEMBALIKAN').count()
 
-    paket_terbaru = Paket.objects.all().order_by('-id')[:5]
+    paket_terbaru = Paket.objects.all().order_by('-created_at')[:5]
 
+    labels_chart = []
+    data_paket_dikirim = []
+    data_paket_diterima = []
+    data_paket_dikembalikan = []
+    data_keberhasilan_chart = []
+    data_waktu_chart = [2.4, 2.2, 2.5, 2.1, 2.3, 2.4]
 
-    return render(request, 'tracking/master/adminDasbor.html', {
-        'total_paket': total_paket,
-        'paket_dikemas': paket_dikemas,
+    hari_ini = timezone.now().date()
+    
+    for i in range(5, -1, -1): 
+        tanggal_loop = hari_ini - timedelta(days=i)
+        
+        labels_chart.append(tanggal_loop.strftime("%d %b")) 
+ 
+        paket_harian = Paket.objects.filter(created_at__date=tanggal_loop) 
+        
+        jml_dikirim = paket_harian.all().count()
+        jml_diterima = paket_harian.filter(status='DITERIMA').count()
+        jml_dikembalikan = paket_harian.filter(status='DIKEMBALIKAN').count()
+        
+        data_paket_dikirim.append(jml_dikirim)
+        data_paket_diterima.append(jml_diterima)
+        data_paket_dikembalikan.append(jml_dikembalikan)
+
+        total_selesai_harian = jml_diterima + jml_dikembalikan
+        if total_selesai_harian > 0:
+            persentase = (jml_diterima / total_selesai_harian) * 100
+        else:
+            persentase = 100 if jml_diterima > 0 else 0
+        data_keberhasilan_chart.append(round(persentase, 1))
+
+    keberhasilan_global = 0
+    total_selesai_global = jml_diterima + jml_dikembalikan
+    if total_selesai_global > 0:
+        keberhasilan_global = round((jml_diterima / total_selesai_global) * 100, 1)
+
+    context = {
         'paket_dikirim': paket_dikirim,
         'paket_diterima': paket_diterima,
-        'paket_terbaru': paket_terbaru
-    })
+        'paket_dikembalikan': paket_dikembalikan,
+        'paket_terbaru': paket_terbaru,
+        'labels_chart': labels_chart,
+        'data_paket_dikirim': data_paket_dikirim,
+        'data_paket_diterima': data_paket_diterima,
+        'data_paket_dikembalikan': data_paket_dikembalikan,
+        'keberhasilan_global': keberhasilan_global,
+        'data_waktu_chart': data_waktu_chart,
+        'data_keberhasilan_chart': data_keberhasilan_chart,
+    }
+    return render(request, 'tracking/master/adminDashboard.html', context)

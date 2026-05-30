@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from ..models import Paket, TrackingHistory, TipeLayanan
 from django.db.models import Q
 
-def cek_resi(request):
+def cekResi(request):
     resi = request.GET.get('resi')
     
     context = {}
@@ -31,7 +31,7 @@ def cek_resi_api(request, resi):
     })
 
 @login_required(login_url='login')
-def kirim_paket(request):    
+def kirimPaket(request):    
     if request.user.role != 'CUSTOMER':
         messages.error(request, "Hanya akun Pelanggan yang dapat membuat kiriman.")
         return redirect('index')
@@ -64,7 +64,7 @@ def kirim_paket(request):
             alamatPenerima=alamat,
             kotaPenerima=kota,
             noHpPenerima=no_hp,
-            status='DIKEMAS' # Status awal
+            status='DIKEMAS'
         )
 
         TrackingHistory.objects.create(
@@ -110,22 +110,19 @@ def getAllPaket(request):
 
 
 @login_required(login_url='login')
-def antar_paket(request, paket_id):
+def antarPaket(request, paket_id):
     """Fungsi agar Kurir mengambil paket dan mulai mengirimkannya"""
     
-    # PERBAIKAN: Gunakan 'kurir_profile'
     if request.user.role != 'KURIR' or not hasattr(request.user, 'kurir_profile'):
         messages.error(request, "Akses ditolak! Profil kurir tidak ditemukan.")
         return redirect('all_paket') 
 
     paket = get_object_or_404(Paket, id=paket_id)
     
-    # Update Status dan assign Kurir menggunakan 'kurir_profile'
     paket.status = 'DIKIRIM'
     paket.kurir = request.user.kurir_profile
     paket.save()
 
-    # Catat ke History
     TrackingHistory.objects.create(
         paket=paket,
         status='DIKIRIM',
@@ -138,7 +135,7 @@ def antar_paket(request, paket_id):
 
 
 @login_required(login_url='login')
-def terima_paket(request, paket_id):
+def terimaPaket(request, paket_id):
     """Fungsi agar Kurir mengonfirmasi paket telah sampai ke pelanggan"""
     
     if request.user.role != 'KURIR' or not hasattr(request.user, 'kurir_profile'):
@@ -158,4 +155,25 @@ def terima_paket(request, paket_id):
     )
     
     messages.success(request, f"Selesai! Paket {paket.resi} telah berhasil dikirim.")
+    return redirect('all_paket')
+
+@login_required(login_url='login')
+def returPaket(request, paket_id):
+    if request.user.role != 'KURIR' or not hasattr(request.user, 'kurir_profile'):
+        messages.error(request, "Akses ditolak!")
+        return redirect('all_paket')
+
+    paket = get_object_or_404(Paket, id=paket_id)
+    
+    paket.status = 'DIKEMBALIKAN'
+    paket.save()
+
+    TrackingHistory.objects.create(
+        paket=paket,
+        status='DIKEMBALIKAN',
+        lokasi=paket.kotaPenerima,
+        notes="Paket dikembalikan ke pengirim karena penerima tidak dapat dihubungi atau menolak menerima paket."
+    )
+    
+    messages.success(request, f"Paket {paket.resi} telah dikembalikan ke pengirim.")
     return redirect('all_paket')

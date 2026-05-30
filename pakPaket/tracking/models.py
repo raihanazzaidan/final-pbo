@@ -63,6 +63,7 @@ class Paket(models.Model):
         ('DIKEMAS', 'Dikemas'),
         ('DIKIRIM', 'Dikirim'),
         ('DITERIMA', 'Diterima'),
+        ('DIBATALKAN', 'Dibatalkan'),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     deskripsi = models.TextField(verbose_name="Deskripsi")
@@ -103,14 +104,10 @@ class Paket(models.Model):
                 kota_bersih = kota_input.replace(" ", "")
                 kode_kota = kota_bersih[:3] if len(kota_bersih) >= 3 else kota_bersih.ljust(3, 'X')
 
-            # 3. Generate Nomor Unik (Contoh: 8 karakter kombinasi angka dan huruf besar)
-            # Hasilnya akan seperti: 'A4F89K2P'
             kode_unik = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
 
-            # 4. Gabungkan menjadi nomor resi utuh
             self.resi = f"{kode_kota}-{kode_unik}"
             
-        # Panggil fungsi save() asli milik Django untuk menyimpan ke database
         super().save(*args, **kwargs)
     def __str__(self):
         return f"{self.id} - {self.status}"
