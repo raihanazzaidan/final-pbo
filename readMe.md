@@ -14,9 +14,9 @@ Proyek ini dikembangkan sebagai pemenuhan Tugas Akhir Mata Kuliah Pemrograman Be
 
 ## 🛠️ Teknologi yang Digunakan
 
-* **Backend:** Python 3, Django Framework
+* **Backend:** Django Framework
 * **Frontend:** HTML5, Tailwind CSS
-* **Database:** MariaDB / MySQL
+* **Database:** MySQL
 * **Paradigma Utama:** Object-Oriented Programming (OOP)
 
 ---
