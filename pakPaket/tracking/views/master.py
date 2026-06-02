@@ -181,10 +181,10 @@ def adminDashboard(request):
     if total_selesai_global > 0:
         keberhasilan_global = round((paket_diterima / total_selesai_global) * 100, 1)
 
-    paket_sukses = Paket.objects.filter(status='DITERIMA', edited_at__isnull=False)  
+    paket_sukses = Paket.objects.filter(status='DITERIMA', updated_at__isnull=False)  
     total_hari_semua = 0
     for p in paket_sukses:
-        selisih = p.edited_at - p.created_at
+        selisih = p.updated_at - p.created_at
         total_hari_semua += selisih.total_seconds() / 86400 
         
     rata_waktu_global = 0
@@ -192,7 +192,7 @@ def adminDashboard(request):
         rata_waktu_global = round(total_hari_semua / paket_sukses.count(), 1)
 
     paket_terbaru = Paket.objects.all().order_by('-created_at')[:5]
-    aktivitas_terbaru = TrackingHistory.objects.select_related('paket').all().order_by('-timestamp')[:5]
+    aktivitas_terbaru = TrackingHistory.objects.select_related('paket').all().order_by('-created_at')[:5]
 
     labels_chart = []
     data_paket_dikirim = []
@@ -218,11 +218,11 @@ def adminDashboard(request):
         data_paket_diterima.append(jml_diterima)
         data_paket_dikembalikan.append(jml_dikembalikan)
 
-        paket_diterima_harian = paket_harian.filter(status='DITERIMA', edited_at__isnull=False)
+        paket_diterima_harian = paket_harian.filter(status='DITERIMA', updated_at__isnull=False)
         
         total_hari_harian = 0
         for p in paket_diterima_harian:
-            selisih = p.edited_at - p.created_at
+            selisih = p.updated_at - p.created_at
             total_hari_harian += selisih.total_seconds() / 86400
             
         rata_harian = 0

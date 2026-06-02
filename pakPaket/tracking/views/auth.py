@@ -67,7 +67,7 @@ def customerRegister(request):
         except Exception as e:
             messages.error(request, f'Terjadi kesalahan saat registrasi: {str(e)}')
             return render(request, 'tracking/auth/register.html', {'form_data': request.POST})
-    return render(request, 'tracking/auth/login.html')
+    return render(request, 'tracking/auth/register.html')
 
 @login_required(login_url='login')
 def logoutView(request):
@@ -106,9 +106,9 @@ def adminRegister(request):
     return render(request, 'tracking/auth/adminRegister.html')
 
 def kurirRegister(request):
-    if request.user.username != 'superadmin' | request.user.role != 'ADMIN':
+    if request.user.username != 'superadmin' and request.user.role != 'ADMIN':
         messages.error(request, 'Akses ditolak! Hanya superadmin yang dapat membuat akun kurir baru.')
-        return redirect('index')
+        return redirect('admin_dashboard')
     
     if request.method == 'POST':
         username_input = request.POST.get('username')
