@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Paket - pakPaket</title>
+    <title>PakPaket | List Paket</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -53,6 +53,7 @@
                     {% if paket.status == 'DIKEMAS' %} bg-yellow-100 text-yellow-700
                     {% elif paket.status == 'DIKIRIM' %} bg-blue-100 text-blue-700
                     {% elif paket.status == 'DITERIMA' %} bg-emerald-100 text-emerald-700
+                    {% elif paket.status == 'DIKEMBALIKAN' %} bg-red-100 text-red-700
                     {% else %} bg-gray-100 text-gray-700 {% endif %}">
                     {{ paket.status }}
                 </span>
@@ -82,20 +83,29 @@
                         <p class="text-xs text-gray-500">Berat</p>
                         <p class="text-sm font-semibold text-gray-800">{{ paket.berat }} Kg</p>
                     </div>
+                    <div>
+                        {% if paket.status == 'DITERIMA' %}
+                            <p class="text-xs text-gray-500">Paket telah diterima</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ paket.edited_at|date:"d M Y" }}</p>
+                        {% elif paket.status == 'DIKEMBALIKAN' %}
+                            <p class="text-xs text-gray-500">Paket dikembalikan</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ paket.edited_at|date:"d M Y" }}</p>
+                        {% else%}
+                            <p class="text-xs text-gray-500">Estimasi Sampai</p>
+                            <p class="text-sm font-semibold text-gray-800">{{ paket.estimasi_sampai|date:"d M Y" }}</p>
+                        {% endif %}
+                    </div>
                 </div>
-
             </div>
 
             <div class="px-5 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between">
                 <span class="text-xs text-gray-400 font-medium">📅 {{ paket.created_at|date:"d M Y" }}</span>
                 
                 <div class="flex items-center gap-2">
-                    <a href="{% url 'cek_resi_publik' %}?id={{ paket.id }}" class="text-sm font-medium text-gray-500 hover:text-emerald-600 transition bg-white border border-gray-200 px-3 py-1.5 rounded-md">
-                        Lacak
+                    <a href="{% url 'detail_paket' paket.id %}" class="text-sm font-medium text-gray-500 hover:text-emerald-600 transition bg-white border border-gray-200 px-3 py-1.5 rounded-md">
+                        Detail
                     </a>
-
                     {% if request.user.role == 'KURIR' %}
-                        
                         {% if paket.status == 'DIKEMAS' %}
                             <a href="{% url 'antar_paket' paket.id %}" onclick="return confirm('Ambil paket ini untuk dikirim?');" class="text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition px-3 py-1.5 rounded-md shadow-sm">
                                 Bawa & Kirim
@@ -104,12 +114,13 @@
                             <a href="{% url 'terima_paket' paket.id %}" onclick="return confirm('Konfirmasi paket telah diterima pelanggan?');" class="text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 transition px-3 py-1.5 rounded-md shadow-sm">
                                 Selesaikan
                             </a>
-                        {% endif %}
-                        
+                            <a href="{% url 'retur_paket' paket.id %}" onclick="return confirm('Konfirmasi paket telah diterima pelanggan?');" class="text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition px-3 py-1.5 rounded-md shadow-sm">
+                                Retur
+                            </a>
+                        {% endif %}     
                     {% endif %}
                 </div>
             </div>
-
         </div>
 
         {% empty %}

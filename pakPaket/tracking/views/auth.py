@@ -6,7 +6,7 @@ from ..models import User, Customer, Kurir
 
 def loginView(request):
     if request.user.is_authenticated:
-        return redirect('index')  # Redirect ke halaman utama jika sudah login
+        return redirect('index')
     
     if request.method == 'POST':
         username_input = request.POST.get('username')
@@ -18,7 +18,7 @@ def loginView(request):
             login(request, user)
             
             if user.role == 'ADMIN':
-                return redirect('admin_dasbor')
+                return redirect('admin_dashboard')
             elif user.role == 'KURIR':
                 return redirect('index')
             elif user.role == 'CUSTOMER':
@@ -75,6 +75,7 @@ def logoutView(request):
     messages.info(request, 'Anda telah berhasil logout.')
     return redirect('login')
 
+@login_required(login_url='login')
 def adminRegister(request):
     if request.user.username != 'superadmin':
         messages.error(request, 'Akses ditolak! Hanya superadmin yang dapat membuat akun admin baru.')
@@ -105,7 +106,7 @@ def adminRegister(request):
     return render(request, 'tracking/auth/adminRegister.html')
 
 def kurirRegister(request):
-    if request.user.username != 'superadmin':
+    if request.user.username != 'superadmin' | request.user.role != 'ADMIN':
         messages.error(request, 'Akses ditolak! Hanya superadmin yang dapat membuat akun kurir baru.')
         return redirect('index')
     

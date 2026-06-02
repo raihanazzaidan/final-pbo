@@ -11,10 +11,11 @@ urlpatterns = [
     path('panel/users/hapus/<uuid:user_id>/', master.deleteUser, name='delete_user'),
 
     # URL Paket
-    path('paket/cek-resi/', paket.cek_resi, name='cek_resi_publik'),
+    path('paket/cekResi/', paket.cekResi, name='cek_resi'),
     path('api/paket/<uuid:paket_id>/', paket.cek_resi_api, name='api_paket'),
     path('paket/all/', paket.getAllPaket, name='all_paket'),
-    path('paket/kirim/', paket.kirim_paket, name='kirim_paket'),
+    path('paket/<uuid:paket_id>/', paket.detailPaket, name='detail_paket'),
+    path('paket/kirim/', paket.kirimPaket, name='kirim_paket'),
 
     # URL Auth
     path('login/', auth.loginView, name='login'),
@@ -25,10 +26,13 @@ urlpatterns = [
 
     # URL Master 
     path('layanan/add/', master.addTipeLayanan, name='tambah_layanan'),
-    path('adm/', master.dasborAdmin, name='admin_dasbor'),
+    path('adm/', master.adminDashboard, name='admin_dashboard'),
+    path('gudang/', master.getAllGudang, name='all_gudang'),
+    path('gudang/add/', master.addGudang, name='add_gudang'),
 
     # URL Kurir
-    path('paket/kurir/antar/<uuid:paket_id>/', paket.antar_paket, name='antar_paket'),
-    path('paket/kurir/terima/<uuid:paket_id>/', paket.terima_paket, name='terima_paket'),
+    path('paket/kurir/antar/<uuid:paket_id>/', paket.antarPaket, name='antar_paket'),
+    path('paket/kurir/terima/<uuid:paket_id>/', paket.terimaPaket, name='terima_paket'),
+    path('paket/kurir/retur/<uuid:paket_id>/', paket.returPaket, name='retur_paket'),
 
 ]

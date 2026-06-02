@@ -14,9 +14,9 @@ Proyek ini dikembangkan sebagai pemenuhan Tugas Akhir Mata Kuliah Pemrograman Be
 
 ## 🛠️ Teknologi yang Digunakan
 
-* **Backend:** Python 3, Django Framework
+* **Backend:** Django Framework
 * **Frontend:** HTML5, Tailwind CSS
-* **Database:** MariaDB / MySQL
+* **Database:** MySQL
 * **Paradigma Utama:** Object-Oriented Programming (OOP)
 
 ---
@@ -48,5 +48,8 @@ Polimorfisme diimplementasikan melalui teknik *Method Overriding*.
 
 1. **Clone repositori ini:**
    ```bash
-   git clone [https://github.com/raihanazzaidan/final-pbo.git](https://github.com/raihanazzaidan/final-pbo.git)
+   git clone https://github.com/raihanazzaidan/final-pbo
    cd final-pbo
+2. **Buat venv di dalam folder final-pbo**
+   ```bash
+   python -m venv nama_env

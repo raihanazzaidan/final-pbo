@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lacak Paket - pakPaket</title>
+    <title>PakPaket | Track Paket</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -16,7 +16,7 @@
         <h2 class="text-3xl font-bold text-emerald-600 mb-2">📦 Lacak Paket</h2>
         <p class="text-gray-500 text-sm mb-6">Masukkan nomor resi untuk mengetahui posisi paket Anda saat ini</p>
         
-        <form method="GET" action="{% url 'cek_resi_publik' %}" class="flex justify-center max-w-lg mx-auto gap-2">
+        <form method="GET" action="{% url 'cek_resi' %}" class="flex justify-center max-w-lg mx-auto gap-2">
             <input type="text" name="resi" value="{{ request.GET.resi }}" placeholder="Contoh: SBY-A4F89K2P" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition font-mono uppercase" required>
             <button type="submit" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-emerald-700 transition shadow-sm whitespace-nowrap">
                 Lacak
@@ -35,7 +35,6 @@
 
     {% if paket %}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
         <div class="md:col-span-1 space-y-6">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="bg-emerald-600 text-white px-5 py-4 flex justify-between items-center">
@@ -57,15 +56,37 @@
                         </span>
                     </div>
                     <hr class="border-gray-100">
-                    <div>
-                        <small class="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Layanan</small>
-                        <strong class="text-gray-800">{{ paket.tipeLayanan.namaLayanan }}</strong>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <small class="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Layanan</small>
+                            <strong class="text-gray-800">{{ paket.tipeLayanan.namaLayanan }}</strong>
+                        </div>
+                        <div>
+                            <small class="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Estimasi Tiba</small>
+                            <strong class="text-emerald-600 font-bold">{{ paket.estimasi_sampai|date:"d M Y"|default:"-" }}</strong>
+                        </div>
                     </div>
+
+                    <hr class="border-gray-100">
+
                     <div>
                         <small class="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Pengirim</small>
                         <strong class="text-gray-800 block">{{ paket.pengirim.nama }}</strong>
                         <span class="text-sm text-gray-500">{{ paket.pengirim.kota }}</span>
                     </div>
+                    
+                    <div>
+                        <small class="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Gudang Transit</small>
+                        {% if paket.transitGudang %}
+                            <strong class="text-gray-800 block">Gudang {{ paket.transitGudang.kota|default:paket.transitGudang }}</strong>
+                        {% else %}
+                            <span class="text-sm text-gray-400 italic">Belum masuk gudang transit</span>
+                        {% endif %}
+                    </div>
+
+                    <hr class="border-gray-100">
+
                     <div>
                         <small class="text-xs text-gray-400 font-bold uppercase tracking-wider block mb-1">Penerima</small>
                         <strong class="text-gray-800 block">{{ paket.penerima }}</strong>

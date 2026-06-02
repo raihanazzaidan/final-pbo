@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pakPaket | Gudang List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+    {%include 'tracking/component/navbar.html' %}
+
+    <div class="max-w-6xl mx-auto px-4 py-10">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">📦 Kelola Gudang</h1>
+                <p class="text-gray-500 text-sm mt-1">Daftar seluruh gudang yang terdaftar di sistem</p>
+            </div>
+            <a href="{% url 'add_gudang' %}" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm">
+                + Tambah Gudang Baru
+            </a>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}bg-red-50 text-red-600 border-red-200{% else %}bg-emerald-50 text-emerald-600 border-emerald-200{% endif %} border text-sm p-4 rounded-lg mb-6">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200 text-xs text-gray-500 uppercase tracking-wider">
+                        <th class="p-4 font-semibold">Nama Gudang</th>
+                        <th class="p-4 font-semibold">Alamat</th>
+                        <th class="p-4 font-semibold">Kota</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for gudang in gudang_list %}
+                    <tr class="hover:bg-gray-50 transition">
+                        <td class="p-4">
+                            <p class="font-bold text-gray-800">{{ gudang.namaGudang }}</p>
+                        </td>
+                        <td class="p-4">
+                            <p class="text-gray-600">{{ gudang.alamat }}</p>
+                        </td>
+                        <td class="p-4">
+                            <p class="text-gray-600">{{ gudang.kota }}</p>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="p-8 text-center text-gray-500">
+                            Tidak ada gudang yang ditemukan.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

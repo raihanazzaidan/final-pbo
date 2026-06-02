@@ -3,8 +3,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from ..models import Paket, TrackingHistory, TipeLayanan
 from django.db.models import Q
+from django.utils import timezone
 
-def cek_resi(request):
+def cekResi(request):
     resi = request.GET.get('resi')
     
     context = {}
@@ -31,7 +32,7 @@ def cek_resi_api(request, resi):
     })
 
 @login_required(login_url='login')
-def kirim_paket(request):    
+def kirimPaket(request):    
     if request.user.role != 'CUSTOMER':
         messages.error(request, "Hanya akun Pelanggan yang dapat membuat kiriman.")
         return redirect('index')
@@ -64,7 +65,7 @@ def kirim_paket(request):
             alamatPenerima=alamat,
             kotaPenerima=kota,
             noHpPenerima=no_hp,
-            status='DIKEMAS' # Status awal
+            status='DIKEMAS'
         )
 
         TrackingHistory.objects.create(
@@ -87,7 +88,7 @@ def getAllPaket(request):
     if request.user.role == 'KURIR':
         if hasattr(request.user, 'kurir_profile'):
             profil_kurir = request.user.kurir_profile
-            paket_list = Paket.objects.filter(
+            paket_list = Paket.objects.select_related('tipeLayanan').filter(
                 Q(status='DIKEMAS') | Q(status='DIKIRIM', kurir=profil_kurir)
             ).order_by('created_at')
         else:
@@ -95,12 +96,12 @@ def getAllPaket(request):
             
     elif request.user.role == 'CUSTOMER':
         if hasattr(request.user, 'customer_profile'):
-            paket_list = Paket.objects.filter(pengirim=request.user.customer_profile).order_by('-created_at')
+            paket_list = Paket.objects.select_related('tipeLayanan').filter(pengirim=request.user.customer_profile).order_by('-created_at')
         else:
             paket_list = Paket.objects.none()
             
     elif request.user.role == 'ADMIN':
-        paket_list = Paket.objects.all().order_by('-created_at')
+        paket_list = Paket.objects.select_related('tipeLayanan').all().order_by('-created_at')
     else:
         paket_list = Paket.objects.none()
 
@@ -108,24 +109,34 @@ def getAllPaket(request):
         'paket_list': paket_list
     })
 
+def detailPaket(request, paket_id):
+    paket = get_object_or_404(
+        Paket.objects.select_related('pengirim', 'tipeLayanan', 'transitGudang', 'kurir'), 
+        id=paket_id
+    )
+    
+    riwayat = paket.history.all().order_by('-timestamp')
+    
+    context = {
+        'paket': paket,
+        'riwayat': riwayat,
+    }
+    return render(request, 'tracking/paket/detail_paket.html', context)
 
 @login_required(login_url='login')
-def antar_paket(request, paket_id):
+def antarPaket(request, paket_id):
     """Fungsi agar Kurir mengambil paket dan mulai mengirimkannya"""
     
-    # PERBAIKAN: Gunakan 'kurir_profile'
     if request.user.role != 'KURIR' or not hasattr(request.user, 'kurir_profile'):
         messages.error(request, "Akses ditolak! Profil kurir tidak ditemukan.")
         return redirect('all_paket') 
 
     paket = get_object_or_404(Paket, id=paket_id)
     
-    # Update Status dan assign Kurir menggunakan 'kurir_profile'
     paket.status = 'DIKIRIM'
     paket.kurir = request.user.kurir_profile
     paket.save()
 
-    # Catat ke History
     TrackingHistory.objects.create(
         paket=paket,
         status='DIKIRIM',
@@ -138,9 +149,7 @@ def antar_paket(request, paket_id):
 
 
 @login_required(login_url='login')
-def terima_paket(request, paket_id):
-    """Fungsi agar Kurir mengonfirmasi paket telah sampai ke pelanggan"""
-    
+def terimaPaket(request, paket_id):    
     if request.user.role != 'KURIR' or not hasattr(request.user, 'kurir_profile'):
         messages.error(request, "Akses ditolak!")
         return redirect('all_paket')
@@ -158,4 +167,25 @@ def terima_paket(request, paket_id):
     )
     
     messages.success(request, f"Selesai! Paket {paket.resi} telah berhasil dikirim.")
+    return redirect('all_paket')
+
+@login_required(login_url='login')
+def returPaket(request, paket_id):
+    if request.user.role != 'KURIR' or not hasattr(request.user, 'kurir_profile'):
+        messages.error(request, "Akses ditolak!")
+        return redirect('all_paket')
+
+    paket = get_object_or_404(Paket, id=paket_id)
+    
+    paket.status = 'DIKEMBALIKAN'
+    paket.save()
+
+    TrackingHistory.objects.create(
+        paket=paket,
+        status='DIKEMBALIKAN',
+        lokasi=paket.kotaPenerima,
+        notes="Paket dikembalikan ke pengirim karena penerima tidak dapat dihubungi atau menolak menerima paket."
+    )
+    
+    messages.success(request, f"Paket {paket.resi} telah dikembalikan ke pengirim.")
     return redirect('all_paket')

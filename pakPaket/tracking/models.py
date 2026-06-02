@@ -1,4 +1,6 @@
 from django.db import models
+from datetime import timedelta
+from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 import uuid
 import random
@@ -63,6 +65,7 @@ class Paket(models.Model):
         ('DIKEMAS', 'Dikemas'),
         ('DIKIRIM', 'Dikirim'),
         ('DITERIMA', 'Diterima'),
+        ('DIBATALKAN', 'Dibatalkan'),
     ]
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     deskripsi = models.TextField(verbose_name="Deskripsi")
@@ -79,9 +82,22 @@ class Paket(models.Model):
     kurir = models.ForeignKey(Kurir, on_delete=models.SET_NULL, null=True, blank=True, related_name='paket_kurir', verbose_name="Kurir")
     transitGudang = models.ForeignKey(Gudang, on_delete=models.SET_NULL, null=True, blank=True, related_name='paket_gudang', verbose_name="Transit Gudang")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tanggal Dibuat")
+    edited_at = models.DateTimeField(null=True, verbose_name="Tanggal Diedit")
     resi = models.CharField(max_length=20, unique=True, blank=True, verbose_name="Nomor Resi")
 
+    @property
+    def estimasi_sampai(self):
+        if self.created_at and self.tipeLayanan:
+            return self.created_at + timedelta(days=self.tipeLayanan.estHari)
+        return None
+
     def save(self, *args, **kwargs):
+        if not self._state.adding:
+            paket_lama = Paket.objects.get(pk=self.pk)
+            
+            if self.status != paket_lama.status and self.status in ['DIKIRIM', 'DITERIMA']:
+                self.edited_at = timezone.now()
+                
         if not self.resi:
             
             kota_input = self.kotaPenerima.upper().strip()
@@ -96,6 +112,7 @@ class Paket(models.Model):
                 'MEDAN': 'KNO',
                 'MAKASSAR': 'UPG',
                 'BALI': 'DPS',
+                'BANJARMASIN': 'BJM',
             }
 
             kode_kota = kode_kota_map.get(kota_input)
@@ -103,15 +120,22 @@ class Paket(models.Model):
                 kota_bersih = kota_input.replace(" ", "")
                 kode_kota = kota_bersih[:3] if len(kota_bersih) >= 3 else kota_bersih.ljust(3, 'X')
 
-            # 3. Generate Nomor Unik (Contoh: 8 karakter kombinasi angka dan huruf besar)
-            # Hasilnya akan seperti: 'A4F89K2P'
             kode_unik = ''.join(random.choices(string.ascii_uppercase + string.digits, k=8))
-
-            # 4. Gabungkan menjadi nomor resi utuh
             self.resi = f"{kode_kota}-{kode_unik}"
+
+        if not self.transitGudang and self.pengirim_id:
+            kota_pengirim = self.pengirim.kota 
             
-        # Panggil fungsi save() asli milik Django untuk menyimpan ke database
+            if kota_pengirim:
+                from .models import Gudang
+                
+                gudang_terdekat = Gudang.objects.filter(kota__iexact=kota_pengirim).first()
+                
+                if gudang_terdekat:
+                    self.transitGudang = gudang_terdekat
+            
         super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.id} - {self.status}"
     

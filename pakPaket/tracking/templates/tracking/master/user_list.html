@@ -16,9 +16,20 @@
             <h1 class="text-2xl font-bold text-gray-800">👥 Kelola Pengguna (User)</h1>
             <p class="text-gray-500 text-sm mt-1">Daftar seluruh akun yang terdaftar di sistem</p>
         </div>
-        <a href="{% url 'add_user' %}" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition">
+        <a href="{% url 'add_user' %}" class="bg-emerald-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-emerald-700 transition shadow-sm">
             + Tambah User Baru
         </a>
+    </div>
+
+    <div class="flex justify-left mb-6">
+        <div class="flex items-center space-x-3">
+            <select id="roleFilter" onchange="window.location.href='?role=' + this.value" 
+                class="bg-white border border-gray-200 text-gray-700 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5 outline-none cursor-pointer shadow-sm min-w-[160px] transition">
+                <option value="all" {% if current_filter == 'all' %}selected{% endif %}>Semua User</option>
+                <option value="KURIR" {% if current_filter == 'KURIR' %}selected{% endif %}>Kurir</option>
+                <option value="CUSTOMER" {% if current_filter == 'CUSTOMER' %}selected{% endif %}>Customer</option>
+            </select>
+        </div>
     </div>
 
     {% if messages %}
@@ -63,6 +74,12 @@
                         {% if usr != request.user %}
                         <a href="{% url 'delete_user' usr.id %}" onclick="return confirm('Yakin ingin menghapus user {{ usr.username }}?');" class="inline-block text-red-600 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-md text-xs font-medium transition">Hapus</a>
                         {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="p-8 text-center text-gray-500">
+                        Tidak ada pengguna yang ditemukan dalam kategori ini.
                     </td>
                 </tr>
                 {% endfor %}

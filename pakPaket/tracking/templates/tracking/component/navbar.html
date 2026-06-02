@@ -4,7 +4,7 @@
             
             <div class="flex items-center gap-8">
                 {% if request.user.role == 'ADMIN' %}
-                    <a href="{% url 'admin_dasbor' %}" class="flex items-center gap-2">
+                    <a href="{% url 'admin_dashboard' %}" class="flex items-center gap-2">
                         <span class="text-2xl">📦</span>
                         <span class="font-bold text-xl text-emerald-600 tracking-tight">pakPaket</span>
                     </a>
@@ -16,7 +16,7 @@
                 {% endif %}
 
                 <div class="hidden md:flex items-center space-x-1">
-                    <a href="{% url 'cek_resi_publik' %}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Cek Resi</a>
+                    <a href="{% url 'cek_resi' %}" class="px-3 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 transition">Cek Resi</a>
                     
                     {% if request.user.is_authenticated %}
                         {% if request.user.role == 'CUSTOMER' %}
@@ -60,7 +60,7 @@
 
     <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
         <div class="px-4 pt-2 pb-4 space-y-1 shadow-lg rounded-b-xl">
-            <a href="{% url 'cek_resi_publik' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-emerald-600">Cek Resi</a>
+            <a href="{% url 'cek_resi' %}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-emerald-600">Cek Resi</a>
             
             {% if request.user.is_authenticated %}
                 <div class="border-t border-gray-100 pt-2 mt-2">
