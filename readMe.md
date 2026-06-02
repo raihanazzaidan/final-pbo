@@ -59,3 +59,29 @@ Polimorfisme diimplementasikan melalui teknik *Method Overriding*.
    source nama_env/bin/activate
    #Windows:
    .\nama_env\Scripts\activate
+4. **Install requirements.txt**
+   ```bash
+   pip install -r requirements.txt
+5. **Migrasi ke Database**
+   Buka file pakPaket/settings.py dan pada bagian DATABASES ganti username dan passwordnya sesuai username dan password kamu dan buat database kosong bernama "pakPaket",
+   kemudian ketik command ini di terminal
+   ```bash
+   python manage.py makemigrations
+   python manage.py migrate
+6. **Buat superuser**
+   Ketik command ini di terminal dan ikuti instruksinya (gunakan username: superadmin)
+   ```bash
+   python manage.py createsuperuser
+   #kemudian ikuti instruksinya
+7. **Tambahkan User dengan Role Admin**
+   Jalankan server, buka 127.0.0.1:8000/login kemudian login dengan superadmin, dan buka 127.0.0.1:8000/adm/register
+   ```bash
+   python manage.py runserver
+8. **Tambahkan Gudang, Tipe Layanan, Kurir**
+   Login sebagai Admin untuk akses menu tambah gudang, tambah tipe layanan, dan tambah kurir
+9. **Daftar sebagai Customer**
+   Kembali ke menu Login kemudian klik "Daftar Sekarang"
+10. **Kirim Paket**
+   Login sebagai Customer untuk akses menu kirim paket
+11. **Antar Paket**
+   Login sebagai Kurir (ditambahkan oleh admin) untuk mengantar paket yang sudah dibuat oleh customer
