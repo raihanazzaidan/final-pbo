@@ -132,16 +132,17 @@ python manage.py runserver
 Proyek ini memiliki 3 alur penggunaan, yakni sebagai customer, kurir, dan admin
 
 1. **Admin**
-   * 
-   * 
-   * 
+   * <img width="1916" height="951" alt="Screenshot 2026-06-03 at 02-42-45 PakPaket Dashboard Admin" src="https://github.com/user-attachments/assets/f84838ee-5059-470e-bc36-cb5dc166cabd" />
+   * <img width="1920" height="1080" alt="Screenshot 2026-06-03 at 02-52-16 PakPaket List Paket" src="https://github.com/user-attachments/assets/308b83fd-e73f-4355-b00a-946d56c5d9df" />
+   * <img width="1920" height="1080" alt="Screenshot 2026-06-03 at 02-51-59 pakPaket User List" src="https://github.com/user-attachments/assets/b522c6e1-54da-455f-a760-621d0ff60338" />
+
 
 2. **Customer**
-   * 
-   * 
-   * 
+   * <img width="1920" height="1080" alt="Screenshot 2026-06-03 at 02-50-18 PakPaket Kirim Paket" src="https://github.com/user-attachments/assets/bdae7e21-05af-4ce8-a549-23855fb927e0" />
+   * <img width="1916" height="951" alt="Screenshot 2026-06-03 at 02-45-15 PakPaket Detail Paket" src="https://github.com/user-attachments/assets/eabf83cb-bebf-42cf-8c36-ab28b1c4e9e0" />
+   * <img width="1916" height="1080" alt="Screenshot 2026-06-03 at 02-43-48 PakPaket List Paket" src="https://github.com/user-attachments/assets/ad57756d-939f-4576-8a5a-146a02c52c35" />
 
 3. **Kurir**
-   * 
+   * <img width="1916" height="951" alt="Screenshot 2026-06-03 at 02-51-04 PakPaket List Paket" src="https://github.com/user-attachments/assets/3e2448a2-1f46-41ef-947f-5dc43f489492" />
    * 
    * 
