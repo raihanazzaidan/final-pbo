@@ -53,3 +53,9 @@ Polimorfisme diimplementasikan melalui teknik *Method Overriding*.
 2. **Buat venv di dalam folder final-pbo**
    ```bash
    python -m venv nama_env
+3. **Aktifkan venv**
+   ```bash
+   #Mac/Linux:
+   source nama_env/bin/activate
+   #Windows:
+   .\nama_env\Scripts\activate
