@@ -104,8 +104,6 @@ def index(request):
 
 @login_required(login_url='login')
 def addTipeLayanan(request):
-    """Controller untuk menambah Tipe Layanan Baru (Khusus ADMIN)"""
-    
     if request.user.role != 'ADMIN':
         messages.error(request, "Akses ditolak! Hanya Admin yang diizinkan menambah layanan.")
         return redirect('index') 
@@ -135,6 +133,42 @@ def addTipeLayanan(request):
             return render(request, 'tracking/master/layanan_form.html', {'form_data': request.POST})
 
     return render(request, 'tracking/master/addLayanan.html')
+
+@login_required(login_url='login')
+def getAllGudang(request):
+    if request.user.role != 'ADMIN':
+        messages.error(request, "Akses ditolak! Hanya Admin yang diizinkan melihat gudang.")
+        return redirect('index') 
+
+    gudang_list = Gudang.objects.all().order_by('namaGudang')
+    context = {
+        'gudang_list': gudang_list,
+    }
+    return render(request, 'tracking/master/getGudang.html', context)
+
+@login_required(login_url='login')
+def addGudang(request):
+    if request.user.role != 'ADMIN':
+        return redirect('index')
+        
+    if request.method == 'POST':
+        nama_gudang = request.POST.get('namaGudang')
+        alamat = request.POST.get('alamat')
+        kota = request.POST.get('kota')
+        
+        if Gudang.objects.filter(namaGudang=nama_gudang).exists():
+            messages.error(request, f"Gudang dengan nama '{nama_gudang}' sudah ada.")
+            return render(request, 'tracking/master/addGudang.html', {'form_data': request.POST})
+            
+        Gudang.objects.create(
+            namaGudang=nama_gudang,
+            alamat=alamat,
+            kota=kota
+        )
+        messages.success(request, f"Gudang '{nama_gudang}' berhasil ditambahkan!")
+        return redirect('admin_dashboard')
+    
+    return render(request, 'tracking/master/addGudang.html')
 
 @login_required(login_url='login')
 def adminDashboard(request):

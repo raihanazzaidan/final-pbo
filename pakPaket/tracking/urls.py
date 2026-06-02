@@ -27,6 +27,8 @@ urlpatterns = [
     # URL Master 
     path('layanan/add/', master.addTipeLayanan, name='tambah_layanan'),
     path('adm/', master.adminDashboard, name='admin_dashboard'),
+    path('gudang/', master.getAllGudang, name='all_gudang'),
+    path('gudang/add/', master.addGudang, name='add_gudang'),
 
     # URL Kurir
     path('paket/kurir/antar/<uuid:paket_id>/', paket.antarPaket, name='antar_paket'),

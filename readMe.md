@@ -48,5 +48,8 @@ Polimorfisme diimplementasikan melalui teknik *Method Overriding*.
 
 1. **Clone repositori ini:**
    ```bash
-   git clone [https://github.com/raihanazzaidan/final-pbo.git](https://github.com/raihanazzaidan/final-pbo.git)
+   git clone https://github.com/raihanazzaidan/final-pbo
    cd final-pbo
+2. **Buat venv di dalam folder final-pbo**
+   ```bash
+   python -m venv nama_env
