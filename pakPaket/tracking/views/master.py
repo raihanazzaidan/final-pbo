@@ -141,15 +141,31 @@ def adminDashboard(request):
     paket_dikirim = Paket.objects.count()
     paket_diterima = Paket.objects.filter(status='DITERIMA').count()
     paket_dikembalikan = Paket.objects.filter(status='DIKEMBALIKAN').count()
+    
+    keberhasilan_global = 0
+    total_selesai_global = paket_diterima + paket_dikembalikan
+    if total_selesai_global > 0:
+        keberhasilan_global = round((paket_diterima / total_selesai_global) * 100, 1)
+
+    paket_sukses = Paket.objects.filter(status='DITERIMA', edited_at__isnull=False)  
+    total_hari_semua = 0
+    for p in paket_sukses:
+        selisih = p.edited_at - p.created_at
+        total_hari_semua += selisih.total_seconds() / 86400 
+        
+    rata_waktu_global = 0
+    if paket_sukses.count() > 0:
+        rata_waktu_global = round(total_hari_semua / paket_sukses.count(), 1)
 
     paket_terbaru = Paket.objects.all().order_by('-created_at')[:5]
+    aktivitas_terbaru = TrackingHistory.objects.select_related('paket').all().order_by('-timestamp')[:5]
 
     labels_chart = []
     data_paket_dikirim = []
     data_paket_diterima = []
     data_paket_dikembalikan = []
     data_keberhasilan_chart = []
-    data_waktu_chart = [2.4, 2.2, 2.5, 2.1, 2.3, 2.4]
+    data_waktu_chart = []
 
     hari_ini = timezone.now().date()
     
@@ -168,6 +184,19 @@ def adminDashboard(request):
         data_paket_diterima.append(jml_diterima)
         data_paket_dikembalikan.append(jml_dikembalikan)
 
+        paket_diterima_harian = paket_harian.filter(status='DITERIMA', edited_at__isnull=False)
+        
+        total_hari_harian = 0
+        for p in paket_diterima_harian:
+            selisih = p.edited_at - p.created_at
+            total_hari_harian += selisih.total_seconds() / 86400
+            
+        rata_harian = 0
+        if paket_diterima_harian.count() > 0:
+            rata_harian = round(total_hari_harian / paket_diterima_harian.count(), 1)
+            
+        data_waktu_chart.append(rata_harian)
+
         total_selesai_harian = jml_diterima + jml_dikembalikan
         if total_selesai_harian > 0:
             persentase = (jml_diterima / total_selesai_harian) * 100
@@ -175,10 +204,6 @@ def adminDashboard(request):
             persentase = 100 if jml_diterima > 0 else 0
         data_keberhasilan_chart.append(round(persentase, 1))
 
-    keberhasilan_global = 0
-    total_selesai_global = jml_diterima + jml_dikembalikan
-    if total_selesai_global > 0:
-        keberhasilan_global = round((jml_diterima / total_selesai_global) * 100, 1)
 
     context = {
         'paket_dikirim': paket_dikirim,
@@ -192,5 +217,7 @@ def adminDashboard(request):
         'keberhasilan_global': keberhasilan_global,
         'data_waktu_chart': data_waktu_chart,
         'data_keberhasilan_chart': data_keberhasilan_chart,
+        'rata_waktu_global': rata_waktu_global,
+        'aktivitas_terbaru': aktivitas_terbaru,
     }
     return render(request, 'tracking/master/adminDashboard.html', context)

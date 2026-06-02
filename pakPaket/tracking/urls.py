@@ -14,6 +14,7 @@ urlpatterns = [
     path('paket/cekResi/', paket.cekResi, name='cek_resi'),
     path('api/paket/<uuid:paket_id>/', paket.cek_resi_api, name='api_paket'),
     path('paket/all/', paket.getAllPaket, name='all_paket'),
+    path('paket/<uuid:paket_id>/', paket.detailPaket, name='detail_paket'),
     path('paket/kirim/', paket.kirimPaket, name='kirim_paket'),
 
     # URL Auth

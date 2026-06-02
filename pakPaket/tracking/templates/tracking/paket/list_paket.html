@@ -102,8 +102,8 @@
                 <span class="text-xs text-gray-400 font-medium">📅 {{ paket.created_at|date:"d M Y" }}</span>
                 
                 <div class="flex items-center gap-2">
-                    <a href="{% url 'cek_resi' %}?id={{ paket.id }}" class="text-sm font-medium text-gray-500 hover:text-emerald-600 transition bg-white border border-gray-200 px-3 py-1.5 rounded-md">
-                        Lacak
+                    <a href="{% url 'detail_paket' paket.id %}" class="text-sm font-medium text-gray-500 hover:text-emerald-600 transition bg-white border border-gray-200 px-3 py-1.5 rounded-md">
+                        Detail
                     </a>
                     {% if request.user.role == 'KURIR' %}
                         {% if paket.status == 'DIKEMAS' %}

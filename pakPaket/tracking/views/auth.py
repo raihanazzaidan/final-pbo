@@ -106,7 +106,7 @@ def adminRegister(request):
     return render(request, 'tracking/auth/adminRegister.html')
 
 def kurirRegister(request):
-    if request.user.username != 'superadmin':
+    if request.user.username != 'superadmin' | request.user.role != 'ADMIN':
         messages.error(request, 'Akses ditolak! Hanya superadmin yang dapat membuat akun kurir baru.')
         return redirect('index')
     

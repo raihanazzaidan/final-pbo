@@ -109,6 +109,19 @@ def getAllPaket(request):
         'paket_list': paket_list
     })
 
+def detailPaket(request, paket_id):
+    paket = get_object_or_404(
+        Paket.objects.select_related('pengirim', 'tipeLayanan', 'transitGudang', 'kurir'), 
+        id=paket_id
+    )
+    
+    riwayat = paket.history.all().order_by('-timestamp')
+    
+    context = {
+        'paket': paket,
+        'riwayat': riwayat,
+    }
+    return render(request, 'tracking/paket/detail_paket.html', context)
 
 @login_required(login_url='login')
 def antarPaket(request, paket_id):
