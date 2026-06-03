@@ -124,7 +124,8 @@ python manage.py runserver
 
 **9. Skenario Penggunaan**
 
-* **Customer:** Kembali ke halaman Login, klik "Daftar Sekarang" untuk membuat akun pelanggan, lalu login untuk mulai mengirim paket.
+* **Admin:** Login menggunakan akun Admin untuk melihat daftar paket, mengelola user, dan melihat statistik pengiriman paket.
+* **Customer:** Klik "Daftar Sekarang" untuk membuat akun pelanggan,atau login jika sudah memiliki akun customer. Lalu coba kirim paket dan lacak paket.
 * **Kurir:** Login menggunakan akun kurir (yang telah dibuat oleh Admin) untuk melihat daftar paket dan memperbarui status pelacakan paket.
 
 ## 📸 Screenshots Program
