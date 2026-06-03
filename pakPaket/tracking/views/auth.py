@@ -28,6 +28,11 @@ def loginView(request):
             return render(request, 'tracking/auth/login.html', {'username_value': username_input})
     return render(request, 'tracking/auth/login.html')
 
+@login_required(login_url='login')
+def logoutView(request):
+    logout(request)
+    messages.info(request, 'Anda telah berhasil logout.')
+    return redirect('login')
 
 def customerRegister(request):
     if request.user.is_authenticated:
@@ -68,12 +73,6 @@ def customerRegister(request):
             messages.error(request, f'Terjadi kesalahan saat registrasi: {str(e)}')
             return render(request, 'tracking/auth/register.html', {'form_data': request.POST})
     return render(request, 'tracking/auth/register.html')
-
-@login_required(login_url='login')
-def logoutView(request):
-    logout(request)
-    messages.info(request, 'Anda telah berhasil logout.')
-    return redirect('login')
 
 @login_required(login_url='login')
 def adminRegister(request):
