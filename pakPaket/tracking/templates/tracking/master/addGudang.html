@@ -16,7 +16,7 @@
             <p class="text-gray-500 mt-2">Tambahkan gudang baru</p>
         </div>
 
-        <form method="POST" action="{% url 'addGudang' %}" class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-6">
+        <form method="POST" action="{% url 'add_gudang' %}" class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 space-y-6">
             {% csrf_token %}
 
             {% if messages %}

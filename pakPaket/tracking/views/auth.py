@@ -114,6 +114,8 @@ def kurirRegister(request):
         email_input = request.POST.get('email')
         password_input = request.POST.get('password')
         nama_input = request.POST.get('nama')
+        id_kurir_input = request.POST.get('idKurir')
+        kota_input = request.POST.get('kota')
         noHp_input = request.POST.get('noHp')
 
         if User.objects.filter(username=username_input).exists():
@@ -131,11 +133,13 @@ def kurirRegister(request):
 
             Kurir.objects.create(
                 user=user,
-                nama=nama_input
+                nama=nama_input,
+                idKurir=id_kurir_input,
+                kota=kota_input
             )
 
             messages.success(request, 'Registrasi berhasil! Silakan login.')
-            return redirect('login')
+            return redirect('admin_dashboard')
         except Exception as e:
             messages.error(request, f'Terjadi kesalahan saat registrasi: {str(e)}')
             return render(request, 'tracking/auth/kurirRegister.html', {'form_data': request.POST})

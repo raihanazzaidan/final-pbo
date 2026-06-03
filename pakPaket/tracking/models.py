@@ -29,7 +29,6 @@ class User(AbstractUser):
     role = models.CharField(max_length=10, choices=ROLE_CHOICES, verbose_name="Role")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Tanggal Bergabung")
 
-    # 4. POLYMORPHISM: Implementasi get_info khusus User
     def get_info(self):
         return f"User: {self.username} | Role: {self.role}"
 
