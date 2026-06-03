@@ -56,7 +56,7 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan aplikasi pakPaket:
 
 **1. Clone repositori**
 ```bash
-git clone https://github.com/raihanazzaidan/final-pbo
+git clone https://github.com/raihanazzaidan/PakPaket
 cd final-pbo
 ```
 
